@@ -1,0 +1,30 @@
+.testimonials__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.testimonial-card {
+  background: var(--white);
+  border-radius: 18px;
+  padding: 30px 26px;
+  box-shadow: var(--shadow);
+  height: 100%;
+}
+
+.testimonial-card__quote {
+  font-style: italic;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+
+.testimonial-card__name {
+  color: var(--rose-deep);
+  font-weight: 600;
+}
+
+@media (max-width: 860px) {
+  .testimonials__grid {
+    grid-template-columns: 1fr;
+  }
+}

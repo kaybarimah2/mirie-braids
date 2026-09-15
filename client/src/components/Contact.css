@@ -1,0 +1,31 @@
+.contact {
+  background: linear-gradient(135deg, var(--maroon), var(--rose-deep));
+  text-align: center;
+}
+
+.contact__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.contact__title {
+  color: var(--white);
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  margin-bottom: 14px;
+}
+
+.contact__desc {
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 480px;
+  margin-bottom: 28px;
+}
+
+.contact__cta {
+  margin-bottom: 20px;
+}
+
+.contact__area {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.9rem;
+}

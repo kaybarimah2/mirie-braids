@@ -1,0 +1,115 @@
+.video-testimonials {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 56px;
+}
+
+.video-testimonials__stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.video-testimonials__frame {
+  position: relative;
+  width: min(360px, 82vw);
+  aspect-ratio: 9 / 16;
+  border-radius: 22px;
+  overflow: hidden;
+  background: #1a0a12;
+  box-shadow: var(--shadow);
+}
+
+.video-testimonials__video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #1a0a12;
+  display: block;
+}
+
+.video-testimonials__mute {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.45);
+  color: var(--white);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.video-testimonials__caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 16px 18px;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.75));
+  color: var(--white);
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+
+.video-testimonials__arrow {
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(192, 90, 114, 0.3);
+  background: var(--white);
+  color: var(--rose-deep);
+  font-size: 1.6rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.video-testimonials__arrow:hover {
+  transform: scale(1.08);
+  background: var(--rose-deep);
+  color: var(--white);
+}
+
+.video-testimonials__dots {
+  display: flex;
+  gap: 8px;
+  margin-top: 22px;
+}
+
+.video-testimonials__dots button {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid var(--rose);
+  background: transparent;
+  padding: 0;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.video-testimonials__dots button.active {
+  background: var(--rose-deep);
+  border-color: var(--rose-deep);
+  transform: scale(1.2);
+}
+
+@media (max-width: 560px) {
+  .video-testimonials__arrow {
+    width: 38px;
+    height: 38px;
+    font-size: 1.3rem;
+  }
+}
