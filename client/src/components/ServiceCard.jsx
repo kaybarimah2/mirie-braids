@@ -5,13 +5,17 @@ import "./ServiceCard.css";
 
 export default function ServiceCard({ service, index }) {
   const [active, setActive] = useState(false);
+  // Touch devices simulate a hover event right before the click on first tap,
+  // which fights with the click toggle below (flash on, flash off). Only
+  // real hover-capable pointers (mouse/trackpad) should use these handlers.
+  const supportsHover = typeof window !== "undefined" && window.matchMedia("(hover: hover)").matches;
 
   return (
     <div
       className={`service-card ${active ? "service-card--active" : ""}`}
       style={{ transitionDelay: `${index * 40}ms` }}
-      onMouseEnter={() => setActive(true)}
-      onMouseLeave={() => setActive(false)}
+      onMouseEnter={() => supportsHover && setActive(true)}
+      onMouseLeave={() => supportsHover && setActive(false)}
       onClick={() => setActive((v) => !v)}
     >
       <div className="service-card__image">
