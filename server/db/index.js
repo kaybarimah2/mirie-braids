@@ -38,6 +38,26 @@ async function init() {
       created_at TIMESTAMPTZ NOT NULL DEFAULT now()
     );
   `);
+
+  // Our backend is the only client that talks to Supabase directly (access is
+  // already gated by our own admin JWT check before any upload/delete route
+  // runs), so grant full access to the "media" bucket at the RLS layer —
+  // otherwise Storage's list/remove calls silently no-op under the project's
+  // default policies even though upload/read still work.
+  await pool.query(`
+    DO $$
+    BEGIN
+      IF NOT EXISTS (
+        SELECT 1 FROM pg_policies
+        WHERE schemaname = 'storage' AND tablename = 'objects' AND policyname = 'media_bucket_all_access'
+      ) THEN
+        CREATE POLICY "media_bucket_all_access" ON storage.objects
+        FOR ALL
+        USING (bucket_id = 'media')
+        WITH CHECK (bucket_id = 'media');
+      END IF;
+    END $$;
+  `);
 }
 
 module.exports = { pool, init };

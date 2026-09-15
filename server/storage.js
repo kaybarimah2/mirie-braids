@@ -33,7 +33,8 @@ async function deleteFile(publicUrl) {
   const idx = publicUrl.indexOf(marker);
   if (idx === -1) return;
   const key = publicUrl.slice(idx + marker.length);
-  await supabase.storage.from(BUCKET).remove([key]);
+  const { error } = await supabase.storage.from(BUCKET).remove([key]);
+  if (error) throw error;
 }
 
 module.exports = { ensureBucket, uploadFile, deleteFile };
