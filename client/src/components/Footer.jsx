@@ -6,8 +6,12 @@ export default function Footer() {
       <div className="container footer__inner">
         <p className="footer__brand">Mirie Braids</p>
         <div className="footer__socials">
-          <a href="#" aria-label="Instagram">Instagram</a>
-          <a href="#" aria-label="Facebook">Facebook</a>
+          <a href="https://www.tiktok.com/@just._mirie" target="_blank" rel="noreferrer" aria-label="TikTok">
+            TikTok
+          </a>
+          <a href="https://snapchat.com/t/Y83xyrD6" target="_blank" rel="noreferrer" aria-label="Snapchat">
+            Snapchat
+          </a>
         </div>
         <p className="footer__copy">© {new Date().getFullYear()} Mirie Braids. All rights reserved.</p>
       </div>
