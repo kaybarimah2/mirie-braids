@@ -4,22 +4,11 @@ Website for Mirie Braids, a home-service hair braiding business in Accra, Ghana.
 
 ## Structure
 
+Pure static React app — no backend to host. It talks directly to [Supabase](https://supabase.com) for the database, file storage, and admin authentication, using Row Level Security so the public can read but only the logged-in admin can write.
+
 - `client/` — React + Vite public site and `/admin` dashboard
-- `server/` — Express API. Database and file storage both live on [Supabase](https://supabase.com) (Postgres + Storage), so the API itself is stateless and can run anywhere.
 
 ## Running locally
-
-**Backend** (first time: seed the database):
-
-```
-cd server
-npm install
-# fill in DATABASE_URL, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY in .env first
-npm run seed   # creates tables, the storage bucket, and the admin account
-npm run dev    # http://localhost:4000
-```
-
-**Frontend:**
 
 ```
 cd client
@@ -27,29 +16,32 @@ npm install
 npm run dev    # http://localhost:5173
 ```
 
-The Vite dev server proxies `/api` to the backend, so just open `http://localhost:5173`.
+`client/.env` needs:
+
+```
+VITE_SUPABASE_URL=...
+VITE_SUPABASE_ANON_KEY=...
+```
+
+(The anon key is safe to expose in the frontend — it has no special privileges; Row Level Security on each table decides what it can actually read or write.)
 
 ## Admin access
 
-Go to `http://localhost:5173/admin/login`.
-
-- Username: `mirie`
-- Password: set in `server/.env` (`ADMIN_PASSWORD`) — **change this after first login**.
+Go to `http://localhost:5173/admin/login`. The admin account is a normal Supabase Auth user (email + password), created once via the Supabase dashboard or Admin API — not a public sign-up flow.
 
 From the dashboard she can add/edit/delete:
 - **Services & Pricing** — the style photos shown in the interactive grid, with name + starting price
 - **Testimonials** — client quotes
 - **Video Testimonials** — customer video clips shown in the autoplay carousel
 
-## Environment variables (backend)
+## Supabase setup (already done for this project, documented for reference)
 
-- `DATABASE_URL` — Supabase Postgres connection string
-- `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` — for file uploads (Storage). The service role key is server-only, never expose it to the frontend.
-- `JWT_SECRET`, `ADMIN_USERNAME`, `ADMIN_PASSWORD` — admin auth
-- `CLIENT_ORIGIN` — the deployed frontend URL, for CORS
+- Tables `services`, `testimonials`, `video_testimonials` in the `public` schema, each with RLS enabled: public `SELECT`, and `INSERT`/`UPDATE`/`DELETE` restricted to `auth.role() = 'authenticated'`.
+- A public Storage bucket named `media`, with the same public-read / authenticated-write policy split on `storage.objects`.
+- One Supabase Auth user for the admin login.
 
 ## Notes for going live
 
 - Real photos and social handles are still placeholders — add via the admin panel and by editing the footer links in `client/src/components/Footer.jsx`.
-- Since the backend no longer needs local disk, it can run on any Node host — no persistent disk required.
+- Deploy `client/` as a static site (e.g. Vercel) with the two `VITE_SUPABASE_*` env vars set. No backend hosting needed.
 - The WhatsApp number is set in `client/src/utils/whatsapp.js`.

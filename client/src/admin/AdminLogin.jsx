@@ -4,7 +4,7 @@ import { api } from "../api";
 import "./admin.css";
 
 export default function AdminLogin() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -15,9 +15,7 @@ export default function AdminLogin() {
     setError("");
     setLoading(true);
     try {
-      const { token, username: uname } = await api.login(username, password);
-      localStorage.setItem("mirie_admin_token", token);
-      localStorage.setItem("mirie_admin_username", uname);
+      await api.login(email, password);
       navigate("/admin");
     } catch (err) {
       setError(err.message);
@@ -35,11 +33,12 @@ export default function AdminLogin() {
         {error && <p className="admin-error">{error}</p>}
 
         <div className="admin-field">
-          <label htmlFor="username">Username</label>
+          <label htmlFor="email">Email</label>
           <input
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             autoComplete="username"
             required
           />

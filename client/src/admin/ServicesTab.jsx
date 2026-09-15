@@ -7,7 +7,9 @@ export default function ServicesTab() {
   const [items, setItems] = useState([]);
   const [form, setForm] = useState(EMPTY);
   const [editingId, setEditingId] = useState(null);
+  const [editingImagePath, setEditingImagePath] = useState(null);
   const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
 
   function load() {
     api.getServices().then(setItems);
@@ -18,33 +20,33 @@ export default function ServicesTab() {
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
+    setSaving(true);
     try {
-      const fd = new FormData();
-      fd.append("name", form.name);
-      fd.append("price_text", form.price_text);
-      if (form.file) fd.append("image", form.file);
-
       if (editingId) {
-        await api.updateService(editingId, fd);
+        await api.updateService(editingId, { ...form, existingImagePath: editingImagePath });
       } else {
-        await api.createService(fd);
+        await api.createService(form);
       }
       setForm(EMPTY);
       setEditingId(null);
+      setEditingImagePath(null);
       load();
     } catch (err) {
       setError(err.message);
+    } finally {
+      setSaving(false);
     }
   }
 
   function startEdit(item) {
     setEditingId(item.id);
+    setEditingImagePath(item.image_path);
     setForm({ name: item.name, price_text: item.price_text, file: null });
   }
 
-  async function handleDelete(id) {
+  async function handleDelete(item) {
     if (!confirm("Delete this style?")) return;
-    await api.deleteService(id);
+    await api.deleteService(item.id, item.image_path);
     load();
   }
 
@@ -84,8 +86,8 @@ export default function ServicesTab() {
         </div>
 
         <div style={{ display: "flex", gap: 8 }}>
-          <button className="admin-btn" type="submit">
-            {editingId ? "Save Changes" : "Add Style"}
+          <button className="admin-btn" type="submit" disabled={saving}>
+            {saving ? "Saving…" : editingId ? "Save Changes" : "Add Style"}
           </button>
           {editingId && (
             <button
@@ -93,6 +95,7 @@ export default function ServicesTab() {
               className="admin-btn admin-btn--secondary"
               onClick={() => {
                 setEditingId(null);
+                setEditingImagePath(null);
                 setForm(EMPTY);
               }}
             >
@@ -117,7 +120,7 @@ export default function ServicesTab() {
             <button className="admin-btn admin-btn--secondary" onClick={() => startEdit(item)}>
               Edit
             </button>
-            <button className="admin-btn admin-btn--danger" onClick={() => handleDelete(item.id)}>
+            <button className="admin-btn admin-btn--danger" onClick={() => handleDelete(item)}>
               Delete
             </button>
           </div>

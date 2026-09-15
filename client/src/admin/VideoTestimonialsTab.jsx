@@ -7,6 +7,7 @@ export default function VideoTestimonialsTab() {
   const [items, setItems] = useState([]);
   const [form, setForm] = useState(EMPTY);
   const [editingId, setEditingId] = useState(null);
+  const [editingVideoPath, setEditingVideoPath] = useState(null);
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState(false);
 
@@ -20,19 +21,16 @@ export default function VideoTestimonialsTab() {
     e.preventDefault();
     setError("");
     try {
-      const fd = new FormData();
-      fd.append("caption", form.caption);
-      if (form.file) fd.append("video", form.file);
-
       setUploading(true);
       if (editingId) {
-        await api.updateVideoTestimonial(editingId, fd);
+        await api.updateVideoTestimonial(editingId, { ...form, existingVideoPath: editingVideoPath });
       } else {
         if (!form.file) throw new Error("Please choose a video");
-        await api.createVideoTestimonial(fd);
+        await api.createVideoTestimonial(form);
       }
       setForm(EMPTY);
       setEditingId(null);
+      setEditingVideoPath(null);
       load();
     } catch (err) {
       setError(err.message);
@@ -43,12 +41,13 @@ export default function VideoTestimonialsTab() {
 
   function startEdit(item) {
     setEditingId(item.id);
+    setEditingVideoPath(item.video_path);
     setForm({ caption: item.caption || "", file: null });
   }
 
-  async function handleDelete(id) {
+  async function handleDelete(item) {
     if (!confirm("Delete this video?")) return;
-    await api.deleteVideoTestimonial(id);
+    await api.deleteVideoTestimonial(item.id, item.video_path);
     load();
   }
 
@@ -86,6 +85,7 @@ export default function VideoTestimonialsTab() {
               className="admin-btn admin-btn--secondary"
               onClick={() => {
                 setEditingId(null);
+                setEditingVideoPath(null);
                 setForm(EMPTY);
               }}
             >
@@ -107,7 +107,7 @@ export default function VideoTestimonialsTab() {
             <button className="admin-btn admin-btn--secondary" onClick={() => startEdit(item)}>
               Edit
             </button>
-            <button className="admin-btn admin-btn--danger" onClick={() => handleDelete(item.id)}>
+            <button className="admin-btn admin-btn--danger" onClick={() => handleDelete(item)}>
               Delete
             </button>
           </div>
