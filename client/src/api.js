@@ -3,6 +3,7 @@ const BASE = `${API_ORIGIN}/api`;
 
 export function assetUrl(path) {
   if (!path) return path;
+  if (/^https?:\/\//i.test(path)) return path;
   return `${API_ORIGIN}${path}`;
 }
 

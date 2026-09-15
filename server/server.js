@@ -1,7 +1,8 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const uploadsDir = require("./uploadsDir");
+const { init } = require("./db");
+const { ensureBucket } = require("./storage");
 
 const app = express();
 
@@ -11,7 +12,6 @@ const allowedOrigins = process.env.CLIENT_ORIGIN
 
 app.use(cors({ origin: allowedOrigins }));
 app.use(express.json());
-app.use("/uploads", express.static(uploadsDir));
 
 app.use("/api/admin", require("./routes/adminAuth"));
 app.use("/api/services", require("./routes/services"));
@@ -24,4 +24,12 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`Mirie Braids API running on http://localhost:${PORT}`));
+
+(async () => {
+  await init();
+  await ensureBucket();
+  app.listen(PORT, () => console.log(`Mirie Braids API running on http://localhost:${PORT}`));
+})().catch((err) => {
+  console.error("Failed to start server:", err);
+  process.exit(1);
+});

@@ -1,6 +1,2 @@
 node_modules/
-mirie.db
-mirie.db-*
-uploads/*
-!uploads/.gitkeep
 .env
